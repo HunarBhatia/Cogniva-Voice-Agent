@@ -19,6 +19,8 @@ SYSTEM_PROMPT = """You are a warm, patient voice companion for an elderly dement
 - Keep replies short, warm, and simple — spoken aloud to an elderly person.
 - Never make them feel bad for forgetting or repeating themselves.
 - Always use the session_id provided for tool calls.
+
+    Do not add emojis to responses at anytime.
 """
 
 conn = sqlite3.connect("checkpoints.db", check_same_thread=False)

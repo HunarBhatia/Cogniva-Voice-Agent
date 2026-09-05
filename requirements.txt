@@ -4,3 +4,6 @@ langchain-groq
 python-dotenv
 requests
 langgraph-checkpoint-sqlite
+fastapi
+uvicorn
+python-multipart
