@@ -30,6 +30,7 @@ app.mount("/audio", StaticFiles(directory="audio_out"), name="audio")
 LOCALE_MAP = {"hi-IN": "hi", "hi": "hi", "en-US": "en", "en": "en"}
 VOICE_MAP = {"hi": "hi-IN-SwaraNeural", "en": "en-IN-NeerjaNeural"}
 
+
 @app.post("/voice-turn")
 async def voice_turn(
     transcript: str = Form(""),
@@ -41,6 +42,8 @@ async def voice_turn(
 ):
     lang = LOCALE_MAP.get(locale, "en")
     session_id = sessionId
+    from tools.session import set_token
+    set_token(token)
 
     # If audio provided, transcribe it ourselves (overrides browser transcript)
     final_transcript = transcript

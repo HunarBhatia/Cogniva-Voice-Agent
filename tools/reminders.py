@@ -1,29 +1,18 @@
-import json
+import requests
 from langchain_core.tools import tool
-
-DB_PATH = "mock_db.json"
-
-def _load():
-    with open(DB_PATH, "r") as f:
-        return json.load(f)
-
-def _save(data):
-    with open(DB_PATH, "w") as f:
-        json.dump(data, f, indent=2)
+from tools.session import BACKEND_URL, auth_headers
 
 @tool
 def add_reminder(session_id: str, reminder: str, time: str) -> str:
     """Add a reminder for medicine, hydration, activity, or appointment."""
-    data = _load()
-    data.setdefault(session_id, {}).setdefault("reminders", []).append({"text": reminder, "time": time})
-    _save(data)
-    return f"Reminder set: {reminder} at {time}"
+    r = requests.post(f"{BACKEND_URL}/reminders/", json={"text": reminder, "time": time}, headers=auth_headers())
+    return f"Reminder set: {reminder} at {time}" if r.status_code == 201 else f"Failed ({r.status_code})"
 
 @tool
 def get_reminders(session_id: str) -> str:
-    """Get all pending reminders for this patient."""
-    data = _load()
-    reminders = data.get(session_id, {}).get("reminders", [])
-    if not reminders:
+    """Get pending reminders for this patient."""
+    r = requests.get(f"{BACKEND_URL}/reminders/", headers=auth_headers())
+    if r.status_code != 200:
         return "No reminders set."
-    return "\n".join([f"{r['text']} at {r['time']}" for r in reminders])
+    items = [f"{x['text']} at {x['time']}" for x in r.json()]
+    return "\n".join(items) if items else "No reminders set."
