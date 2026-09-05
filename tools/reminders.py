@@ -1,7 +1,7 @@
 import json
 from langchain_core.tools import tool
 
-DB_PATH = "mock_db/session_data.json"
+DB_PATH = "mock_db.json"
 
 def _load():
     with open(DB_PATH, "r") as f:
